@@ -1,0 +1,18 @@
+<hello name="{{ name }}"></hello>
+<div>
+  <ul>
+    <li *ngFor="let item of medicos">
+      <h1>
+        {{ item.medico.nombre }}
+      </h1>
+      <div>
+        <ul>
+          <li *ngFor="let prestador of item.medico.prestadores">
+          {{prestador.nombre}}
+            {{prestador.copago}}
+          </li>
+        </ul>
+      </div>
+    </li>
+  </ul>
+</div>
