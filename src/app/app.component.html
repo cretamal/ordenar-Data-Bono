@@ -1,15 +1,14 @@
-<hello name="{{ name }}"></hello>
 <div>
   <ul>
-    <li *ngFor="let item of medicos">
-      <h1>
-        {{ item.medico.nombre }}
-      </h1>
+    <li *ngFor="let item of bonosResult">
+      <p>
+        {{ item.nombre }}
+      </p>
       <div>
         <ul>
-          <li *ngFor="let prestador of dataReduceMedicos">
-            {{ prestador | json }}
-            {{ prestador.copago }}
+          <li *ngFor="let prestador of item.Prestadores">
+            {{ prestador.nombre }}<br />
+            {{ prestador.Bono.copago }}
           </li>
         </ul>
       </div>

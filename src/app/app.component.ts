@@ -1,4 +1,4 @@
-import { Component, OnInit, VERSION } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 
 class GroupData {}
 @Component({
@@ -7,12 +7,13 @@ class GroupData {}
   styleUrls: ['./app.component.css'],
 })
 export class AppComponent implements OnInit {
-  name = 'Angular ' + VERSION.major;
+  name = 'Ordenar, Agrupar, Sort Data Array of Object ';
   data: any = [];
-  medicos: any = [];
   resultReduceMedicos: any = [];
   dataReduceMedicos: any = [];
+  bonosResult: any = [];
   duplicados: any = [];
+
   constructor() {
     this.data = [
       {
@@ -46,7 +47,7 @@ export class AppComponent implements OnInit {
           rut: '076702540-8',
           rutFormateado: null,
           email: null,
-          direccion: 'MARCHANT PEREIRA 38112312',
+          direccion: '1-MARCHANT PEREIRA 38112312',
           latitud: 0.0,
           longitud: 0.0,
           comuna: {
@@ -63,7 +64,7 @@ export class AppComponent implements OnInit {
           telefonoComercial2: null,
           id: 0,
           correlativo: 0,
-          nombre: 'INMUNOMEDICA SALUD S.A.',
+          nombre: '2 INMUNOMEDICA SALUD S.A.',
           imed: 'N',
           bonoWeb: 'S',
           cantMedicos: 0,
@@ -430,9 +431,14 @@ export class AppComponent implements OnInit {
         tipoBono: null,
       },
     ];
-    // console.log('original data', this.data);
   }
+
   ngOnInit() {
+    // Creamos el Bono Base
+    this.createdBono();
+  }
+
+  createdBono() {
     // Recorremos la data que trae el servicio
     // Asignamos 2 llaves nuevas al servicio original dentro de medico => / Prestadores - Bono
     // Prestadores es un array con el valor por defecto de cada prestador
@@ -465,8 +471,12 @@ export class AppComponent implements OnInit {
       //Object.assign(item.medico.Prestadores[0], { Bono: item.medico.Bono });
       // console.log('item.medico.Prestadores', item.medico.Prestadores[0]);
     });
-    // console.log('this.data', this.data);
 
+    // Separamos los medicos duplicados
+    this.reduceBono();
+  }
+
+  reduceBono() {
     // extraemos todos los medicos del servicio original
     const medicos = this.data.map((x) => x.medico);
     // Reduce para obtener los elementos duplicados segun rut de medico
@@ -491,7 +501,10 @@ export class AppComponent implements OnInit {
 
     const dataReduce = [...this.dataReduceMedicos];
 
-    console.log('this.duplicados', this.duplicados);
+    this.insertPrestadores();
+  }
+
+  insertPrestadores() {
     // Buscamos en los duplicados al medico donde corresponden
     this.duplicados.forEach((findMatch) => {
       const match = this.dataReduceMedicos.find(
@@ -499,12 +512,18 @@ export class AppComponent implements OnInit {
       );
       match.Prestadores.push(findMatch.Prestadores[0]);
     });
+    console.log('this.dataReduceMedicos final', this.dataReduceMedicos);
+    this.orderPrestadores();
+  }
+
+  orderPrestadores() {
     this.dataReduceMedicos.forEach((dataItem) => {
       dataItem.Prestadores.sort(function (a, b) {
         return a.Bono.copago - b.Bono.copago;
       });
     });
 
-    console.log('this.data final', this.dataReduceMedicos);
+    this.bonosResult = this.dataReduceMedicos;
+    console.log('this.bonosResult', this.bonosResult);
   }
 }
