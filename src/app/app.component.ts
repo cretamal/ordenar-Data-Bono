@@ -1,69 +1,5 @@
 import { Component, OnInit, VERSION } from '@angular/core';
 
-class Response {
-  medico: Medico = new Medico();
-}
-class Medico {
-  codigoRetorno: number;
-  glosaRetorno: string;
-  rut: string;
-  rutFormateado: string;
-  email: string;
-  direccion: string;
-  latitud: number;
-  longitud: number;
-  comuna: string;
-  ciudad: string;
-  region: string;
-  telefonoParticular: string;
-  telefonoCelular: string;
-  telefonoComercial: string;
-  telefonoComercial1: string;
-  telefonoComercial2: string;
-  nombre: string;
-  especialidad: string;
-  prestadores: Array<Prestador>;
-}
-class Prestador {
-  codigoRetorno: number;
-  glosaRetorno: string;
-  rut: string;
-  rutFormateado: string;
-  email: string;
-  direccion: string;
-  latitud: number;
-  longitud: number;
-  comuna: object;
-  ciudad: string;
-  region: string;
-  telefonoParticular: string;
-  telefonoCelular: string;
-  telefonoComercial: string;
-  telefonoComercial1: string;
-  telefonoComercial2: string;
-  id: number;
-  correlativo: number;
-  nombre: string;
-  imed: string;
-  bonoWeb: string;
-  cantMedicos: number;
-  beneficiario: string;
-  prestacion: string;
-  fechaEmision: string;
-  cobrado: number;
-  bonificado: number;
-  copago: number;
-  favorito: number;
-  relacion: number;
-  user: null;
-  origen: number;
-  excedentes: null;
-  convenioPago: null;
-  transaccion: null;
-  excedentesMonto: number;
-  tipoBono: null;
-}
-
 class GroupData {}
 @Component({
   selector: 'my-app',
@@ -137,7 +73,7 @@ export class AppComponent implements OnInit {
         fechaEmision: null,
         cobrado: 12670,
         bonificado: 10136,
-        copago: 1,
+        copago: 10000000,
         favorito: 0,
         relacion: 0,
         user: null,
@@ -497,8 +433,6 @@ export class AppComponent implements OnInit {
     // console.log('original data', this.data);
   }
   ngOnInit() {
-    // Aux de los elementos duplicado / Restantes del Reduce
-    let restantes: any = [];
     // Recorremos la data que trae el servicio
     // Asignamos 2 llaves nuevas al servicio original dentro de medico => / Prestadores - Bono
     // Prestadores es un array con el valor por defecto de cada prestador
@@ -536,7 +470,7 @@ export class AppComponent implements OnInit {
     // extraemos todos los medicos del servicio original
     const medicos = this.data.map((x) => x.medico);
     // Reduce para obtener los elementos duplicados segun rut de medico
-    this.dataReduceMedicos = medicos.reduce((acc, current, index) => {
+    this.dataReduceMedicos = medicos.reduce((acc, current) => {
       // filtramos por el rut del medico
       this.resultReduceMedicos = acc.find((item) => item.rut === current.rut);
       // Validamos si realmente el item pasado/actual son distintos
@@ -558,17 +492,19 @@ export class AppComponent implements OnInit {
     const dataReduce = [...this.dataReduceMedicos];
 
     console.log('this.duplicados', this.duplicados);
-
+    // Buscamos en los duplicados al medico donde corresponden
     this.duplicados.forEach((findMatch) => {
       const match = this.dataReduceMedicos.find(
         (item) => item.rut === findMatch.rut
       );
-      console.log('match', match.Prestadores);
-
       match.Prestadores.push(findMatch.Prestadores[0]);
     });
+    this.dataReduceMedicos.forEach((dataItem) => {
+      dataItem.Prestadores.sort(function (a, b) {
+        return a.Bono.copago - b.Bono.copago;
+      });
+    });
 
-    // console.log('this.data original', this.data);
     console.log('this.data final', this.dataReduceMedicos);
   }
 }

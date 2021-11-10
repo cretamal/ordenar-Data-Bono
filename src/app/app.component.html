@@ -7,9 +7,9 @@
       </h1>
       <div>
         <ul>
-          <li *ngFor="let prestador of item.medico.prestadores">
-          {{prestador.nombre}}
-            {{prestador.copago}}
+          <li *ngFor="let prestador of dataReduceMedicos">
+            {{ prestador | json }}
+            {{ prestador.copago }}
           </li>
         </ul>
       </div>
